@@ -1,3 +1,15 @@
+provider "azurerm" {
+  features {}
+}
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+    }
+  }
+}
+
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "myResourceGroup"
     location = "eastus"
@@ -110,14 +122,11 @@ resource "azurerm_storage_account" "mystorageaccount" {
 }
 
 # Create (and display) an SSH key
-resource "tls_private_key" "example_ssh" {
+resource "tls_private_key" "ssh" {
   algorithm = "RSA"
   rsa_bits = 4096
 }
-output "tls_private_key" { 
-    value = tls_private_key.example_ssh.private_key_pem 
-    sensitive = true
-}
+
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
@@ -146,24 +155,17 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 
     admin_ssh_key {
         username       = "azureuser"
-        public_key     = file("~/.ssh/id_rsa.pub")
+        public_key     = tls_private_key.ssh.public_key_openssh
     }
 
-    boot_diagnostics {
-        storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
-    }
-
-    tags = {
-        environment = "Terraform Demo"
-    }
 	    
 	connection {
-        host = "${azurerm_public_ip.myterraformpublicip.fqdn}"
+        host = "${self.public_ip_address}"
         user = "azureuser"
         type = "ssh"
-        private_key = "${file("~/.ssh/id_rsa")}"
+        private_key = tls_private_key.ssh.private_key_pem
         timeout = "4m"
-        agent = true
+        agent = false
     }
 	
 	provisioner "file" {
