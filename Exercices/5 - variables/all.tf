@@ -20,9 +20,17 @@ variable "users" {
   default = ["dev", "admin", "test"]
 }
 
-resource "aws_iam_user" "iamuser" {
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "azuread_user" "example" {
   count = length(var.users)
-  name = "z-test-user-${var.users[count.index]}"
+  user_principal_name = "z-test-user-${var.users[count.index]}@pwc.com"
+  display_name        = "z-test-user-${var.users[count.index]}"
+  password   = random_password.password.result
 }
 
 
