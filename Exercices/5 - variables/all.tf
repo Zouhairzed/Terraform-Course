@@ -1,3 +1,16 @@
+provider "azurerm" {
+  features {}
+}
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "2.78.0"
+    }
+  }
+}
+
 #########################
 ### List Variable
 #########################
@@ -7,10 +20,9 @@ variable "users" {
   default = ["dev", "admin", "test"]
 }
 
-}
 resource "aws_iam_user" "iamuser" {
   count = length(var.users)
-  name = "user-${var.users[count.index]}"
+  name = "z-test-user-${var.users[count.index]}"
 }
 
 
