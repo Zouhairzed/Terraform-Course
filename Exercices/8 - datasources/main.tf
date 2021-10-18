@@ -14,9 +14,9 @@ terraform {
 
 data "azurerm_storage_container" "datacontainer" {
   name                 = "tfstate"
-  storage_account_name = "tfstatestorageaccountz"
+  storage_account_name = "tfstatestorageaccountzz"
 }
 
 output "datacontainer" {
-    value = data.datacontainer.metadata
+    value = data.azurerm_storage_container.datacontainer
 }
