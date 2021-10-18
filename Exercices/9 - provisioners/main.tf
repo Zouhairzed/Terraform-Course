@@ -127,6 +127,10 @@ resource "tls_private_key" "ssh" {
   rsa_bits = 4096
 }
 
+resource "local_file" "sshkey" {
+    content     = tls_private_key.ssh.private_key_pem
+    filename = "./azureuser.pem"
+}
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
