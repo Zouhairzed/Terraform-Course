@@ -12,11 +12,11 @@ terraform {
 }
 
 
-data "azurerm_storage_container" "datacontainer" {
-  name                 = "tfstate"
-  storage_account_name = "tfstatestorageaccountzz"
+data "azurerm_virtual_network" "example" {
+  name                = "vnet_test"
+  resource_group_name = "terraform-tfstate-backend"
 }
 
-output "datacontainer" {
-    value = data.azurerm_storage_container.datacontainer
+output "subnets" {
+    value = data.azurerm_virtual_network.example.subnets
 }
