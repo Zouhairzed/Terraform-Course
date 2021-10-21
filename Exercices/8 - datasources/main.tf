@@ -12,11 +12,23 @@ terraform {
 }
 
 
-data "azurerm_virtual_network" "example" {
-  name                = "vnet_test"
-  resource_group_name = "terraform-tfstate-backend"
+# data "azurerm_virtual_network" "example" {
+#   name                = "vnet_test"
+#   resource_group_name = "terraform-tfstate-backend"
+# }
+
+# output "subnets" {
+#     value = data.azurerm_virtual_network.example.subnets
+# }
+
+
+data "azurerm_subnet" "example" {
+  name                 = "subnet_test"
+  virtual_network_name = "vnet_test"
+  resource_group_name  = "terraform-tfstate-backend"
 }
 
-output "subnets" {
-    value = data.azurerm_virtual_network.example.subnets
+output "ips" {
+value = data.azurerm_subnet.example.address_prefixes
+
 }
